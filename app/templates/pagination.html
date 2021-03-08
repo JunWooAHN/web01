@@ -1,0 +1,85 @@
+<style>
+  .pagination > li > a {
+    cursor: pointer;
+  }
+
+  .pagination > li > a.active {
+    cursor: default!important;
+    font-weight: 800;
+  }
+</style>
+
+<nav>
+  <ul class="pagination pull-right">
+    <li class="page-item">
+      <a class="page-link" onclick="goPageForPagination(1)" aria-label="Previous">
+        <span aria-hidden="true">&laquo;</span>
+      </a>
+    </li>
+    {% if pager.prev_interval == pager.this_interval %}
+      <li class="page-item">
+        <a class="page-link" aria-label="Previous">
+          <span aria-hidden="true">&lsaquo;</span>
+        </a>
+      </li>
+    {% else %}
+      <li class="page-item">
+        <a class="page-link" onclick="goPageForPagination({{ pager.prev_interval }})" aria-label="Previous">
+          <span aria-hidden="true">&lsaquo;</span>
+        </a>
+      </li>
+    {% endif %}
+    {% if pager.page_diff >= 0 %}
+      {% for page_idx in pager.page_list %}
+        {% if pager.current_page == page_idx %}
+          <li class="active"><a class="page-link active">{{ page_idx }}</a></li>
+        {% else %}
+          <li><a class="page-link" onclick="goPageForPagination({{ page_idx }})">{{ page_idx }}</a></li>
+        {% endif %}
+      {% endfor %}
+    {% endif %}
+    {% if pager.next_interval == pager.page_count %}
+      <li class="page-item">
+        <a class="page-link" aria-label="Next">
+          <span aria-hidden="true">&rsaquo;</span>
+        </a>
+      </li>
+    {% else %}
+      <li class="page-item">
+        <a class="page-link" onclick="goPageForPagination({{ pager.next_interval }})" aria-label="Next">
+          <span aria-hidden="true">&rsaquo;</span>
+        </a>
+      </li>
+    {% endif %}
+    <li class="page-item">
+      <a class="page-link" onclick="goPageForPagination({{ pager.page_count }})" aria-label="Next">
+        <span aria-hidden="true">&raquo;</span>
+      </a>
+    </li>
+  </ul>
+</nav>
+
+
+<script>
+  function goPageForPagination(page) {
+{#    var pathBase = "{{ pager.url_base|safe }}";#}
+{#    var str = pathBase;#}
+{#    if (pathBase.indexOf("?") > 0) {#}
+{#      pathBase += "&count={{ pager.count }}&page=" + page;#}
+{#    } else {#}
+{#      pathBase += "?count={{ pager.count }}&page=" + page;#}
+{#    }#}
+{#    location.href = pathBase;#}
+
+    var pathBase = "{{ pager.url_base|safe }}";
+    var searchQuery = createNewSearchQuery({"count": "{{ pager.count }}", "page": page});
+    if (pathBase.indexOf("?") > 0) {
+      var pathBase = "{{ pager.urlBase }}";
+      var fullPath = pathBase + searchQuery;
+      location.href = pathBase + searchQuery;
+    } else {
+      var fullPath = getOriginalBaseUrl() + searchQuery;
+      location.href = getOriginalBaseUrl() + searchQuery;
+    }
+  }
+</script>
